@@ -1,0 +1,147 @@
+Ai api documentation ta dekho.
+
+
+Akhon ami akta telegram bot banate chacci.
+
+Jeta diye number kina jabe.
+Bot ta hobe, public bot. Mane j kew kaj korte parbe. 
+
+Bot ta te sudhu matro telegram r Whatsapp. Ai 2 ta service e thakbe.
+
+R county thakbe all available, mane ai 2 ta service er under a joto county ache sob e show korbe.
+
+Bot webhook a set hobe. Railway te deploye hobe. 
+
+Bot er main a admin er api key set thakbe. Seita diyei sob user ra number buy korte parbe.
+
+But user ra nijer moto kore bot a deposit kora lagbe number buy korar jonno. User ra j. Nijer moto kore deposit korbe bot a seta admin er wallet a asbe. , automatic verify system thakbe. Mane kono user jodi deposit korte chai. Ta hole deposit korte parbe. Than transection id ta bot a dile bot sei trx id ta check kore dekhbe valid kina. Than add kore dibe balance. 
+R kono user jeno balance bypass kore deposit korte na pare. Mane froud kore jeno deposit na korei balance add korte pare. Seitar jonno ki kora jai seta kore diba tumi.
+
+Bot a /start dile user k age koyek ta group+channel a join korar jonno force korbe. Join na kore abar start dile. Ager message delete hoye jabe. And abar user er samne show korbe kono channel/ group a join hoini. Se gulo te koin hote.
+
+R group/ channel gulo show korbe online keyboard er moddhe.
+
+J konta group/ channel a join howa lagbe sei list er nice / last a akta button thakbe. " Verify" ai button a click korle bot check korbe j. User sob channel/ group a ache kina. Jpdi join thake ta hole user er samne bot er menu open hoye jabe. 
+R jodi sob gulo j join na hoi. Ta hole abar j gulo te baki ache. Se gulo show korbe join howwrr jonno.
+
+Than verify successful hoile ager join er message gulo delete hoye jabe. And menu open hoye jabe ai menu k persentac keyboard, naki president keyboard, ki jeno bole amar mone nei,). 
+Menu te thakbe.  
+[ Buy Number]
+[Deposit] [balance]
+[Support]
+
+Buy number a click korle service selete korte bolbe. [Telegram] 
+[Whatsapp]
+
+Than j kono service a click korle countys show korbe. Than county te click korle oi county er sob provider gulo show korbe, mane kon provider a koto ta number stock a ache. R price koto.
+
+Than provider a click korle number buy hobe. 
+Number jodi available na thake ta hole bolbe j, number available nai.
+J jodi balance kom thake ta hole bolbe j, balance kom deposit korte.
+
+Jodi api er balance sesh hoye jai. Ta hole bolbe j, api er balance sesh, admin k knock korte. Admin: @X3V1L , r jodi user er account a balance kom thake. Ta hole user k bolbe deposit korbe.
+
+And admin chaile j kono user er balance manually add / less korte parbe. /Addbal {userid}, /lessbal {userid} user notification pabe.
+
+Than number a jodi otp Received hoi ta hole sei number er message ta removed hoye jabe. And otp show korbe. (Age otp show korbe than number removed hobe) 
+
+Anad amader akta otp group ache. Se sekhane otp forward hobe. (Nijer personal chat a to otp thakbei, + group aio show korbe)
+
+R number buy korle number ai vabe show korbe j, 
+Heading: {Service name} — {🇧🇩county name with flag} {💲 price} [ai sob gulo akta line a show korbe. Than sei line er nice online keyboard er moddhe number show korbe with country flag, (and sei button a click korle number copy hoye jabe, flag copy hobe nah .)
+And number er button er nice pasa pasi aro akta button show korbe:
+[Buy again] same provider er number buy hobe click korle, [Cancel ❌]
+
+For example: 
+WhatsApp — 🇦🇫 Afghanistan 💲0.093
+[🇦🇫 +93730501155]
+[Buy again] [Cancel ❌]
+
+Than OTP received hole ai message ta delete hoye jabe. And akta otp show korbe ai vabe:
+
+Heading in one line: 🇨🇱 Telegram(service name) 56968476591(number) 💲0.11(price)
+Than nicer line , inline keyboard a otp show korbe. Click korle copy hoye jabe.
+[123456](OTP) 
+
+Example:
+🇨🇱 Telegram 56968476591 💲0.11
+[ 123456]
+
+Ai otp ta group aio forward hobe. 
+But oi kahne sktu vinno vane show hobe.
+
+Example: 
+🇨🇱 WhatsApp 🆔 6462177945
+(user id, mane j user ai otp ta received korce tar user id)
+[ 56968476591] (akhne inline keyboard a show korbe number, but click korle copy hobe OTP)
+Than nice thakbe 2 ta button:
+[Number bot] [profile] mane: oi user er profile, 
+
+Number bot a click korle bot a niye asbe. R profile a click korle j user otp received korce tar profile a niye jabe. Profile visit korar link: tg://openmessage?user_id=xxxxxxxxxx
+
+Ai link er sesh j kono user er id kore dile link a click korle oi user er id te niye chole jabe.
+
+Number buy korar por akta number 20 minutes porjonto valid thakbe. Than automatic cancel hoye removed joye jabe.
+
+
+
+
+R admin er jonno admin panel thakbe. 
+Se kahne report option thakbe. Leaderboard option thakbe.
+
+Report section a thakbe. Last 24 hours a total koita buy hoise. Koita cancel hoi. Koita otp received hoise. And last 7 days. And last 30 days.
+R leaderboard a show korbe, 24 ghontai total koi kon user active cilo. K koita buy korce. Cancel koita korce. Otp received koita korce. 
+
+Time er hisab hobe Bangladesh time zone hisabe. Rat 12 tai daily rest hobe leaderboard.
+
+And daily rat 12 ta bajle bot group a akta report dibo 24 ghontar.
+
+Just sekhane user der list thake. And user er name er sathe thakbe total koita otp received korce and koto dollar spend korce.
+
+Ai hisab ta bot automatic rat 12 ta baje group a sent korbe.
+
+R per user k hisab dibe j, kon county+ service a koita otp se received korce. + Total koto $ spend korce.
+
+Example: 
+Today total otp received: 16 
+Total buy: 66
+Total cancel ❌: 50
+
+Telegram: — 🇨🇱chile : 6 pis , 💲2
+Whatsapp:— 🇦🇫 Afghanistan: 10 pis. , 💲1.2
+
+And bot ta clean system hobe.
+Bit er all command 10s por removed hoye jabe.
+
+Than all types error message 1/2 minutes por deleted hoye jabe. 
+
+Akta command er por abar oi same command ba new kono command dile ager message ta delete hoye jabe. And new reply asbe. 
+
+But received otp always bot a thakbe. 
+Snd akta number buy korar por abar arekta number but korle, ager number theke jabe, removed/ hide hobe nh number.
+Same thing, number jodi buy kora thake r onno kono command press kore ta holeo number cancel/ ba removed hobe nh.
+
+Admin panel a bordcust system thakle. Text+ picture (multiple pictures) o chaile send korte parbe.
+
+Bot er jonno database use hobe mongodb.
+
+R bot a number buy korar somoi j provider a j price show korbe. Sekhane exactly original price show korbe. But admin chsile sei original price er sathe aro extra price add korte parbe. Admin cahile admin panel theke 0.01/0.02/0.03 etc price add korte parbe.  Ta hole user er sambe provider a original price er sathe ai extra price show show korbe. And user er balance katbeo ai extra price hisabei. Original price hisabe balance katbe nah. Borong extra price shoho balance katbe.
+
+
+R amon jeno kono vabei possible na hoi j. Otp received hoise but balance katce nah user er id theke., ta hole kintu admin er onk loss hoye jabe.
+
+R user ra same time a unlimited number buy korte parbe nhh.
+
+Admin admin panel theke j limit set kore dibe setai hobe 
+
+Mane admin jodi limit kore dei 3 , ta hole user er 3 ta number active thkle 4 number number buy korte gele user k bolbe j, apnar Xxx
+Xxx
+Xxxx 
+3 ta number active ache, OTP er konno wait korun, othoba,  cancel korun. Than cancel korle / otp received hole ai message ta delete hoye jabe, and user nee number er jonno request dite parbe.
+
+
+Bot ta inline keyboard+ president keyboard system hobe, clean system hobe. Fast hobe. User friendly hobe, sudor ui. Ux hobe.
+
+
+
+

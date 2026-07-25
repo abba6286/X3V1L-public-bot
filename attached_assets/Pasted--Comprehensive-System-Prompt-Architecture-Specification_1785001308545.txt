@@ -1,0 +1,127 @@
+# Comprehensive System Prompt & Architecture Specification
+## Project: Automated Telegram Virtual Number Seller Bot
+
+### 1. Project Overview & Tech Stack
+Build a fully automated Telegram Public Bot that sells virtual phone numbers using the SMSBower API[span_0](start_span)[span_0](end_span). The bot will run on a Webhook architecture and be deployed via Railway/Replit.
+
+* **Language/Framework:** Python (python-telegram-bot / Pyrogram) or Node.js (Telegraf / Grammy)
+* **Database:** MongoDB (Mongoose / PyMongo)
+* **API Integration:** SMSBower API (`https://smsbower.page/stubs/handler_api.php`)[span_1](start_span)[span_1](end_span)
+* **Timezone:** Bangladesh Time (`Asia/Dhaka`, UTC+6)
+
+---
+
+### 2. Services & Pricing Architecture
+* **Exclusive Services:** Only **Telegram (`tg`)** and **WhatsApp (`wa`)** services[span_2](start_span)[span_2](end_span).
+* **Countries:** All available countries from SMSBower API[span_3](start_span)[span_3](end_span).
+* **Pricing & Admin Extra Margin:**
+  * Fetch real-time original prices using `getPricesV3`[span_4](start_span)[span_4](end_span).
+  * The Admin can set a custom extra profit margin (e.g., $0.01, $0.02, $0.03) in the database.
+  * Always display and deduct `(Original API Price + Extra Margin)` to the end user.
+
+---
+
+### 3. Payment & Deposit System (BEP-20 / BSC USDT)
+* **Deposit Method:** Crypto (USDT on BEP-20 / BSC Network only).
+* **Personal Admin Wallet:** All user deposits go directly to the Admin’s personal BEP-20 wallet address.
+* **Transaction Verification & Security (Anti-Fraud / Anti-Bypass):**
+  * When a user inputs a Transaction Hash/ID (TxID), the bot must query the BSC Blockchain Explorer API (e.g., BscScan API) in real time.
+  * **Strict Validation Rules:**
+    1. Confirm the transaction status is `Success`.
+    2. Check that the recipient wallet address matches the Admin's configured BEP-20 wallet.
+    3. Verify that the token is legitimate USDT on BSC (`0x55d398326f99059ff775485246999027b3197955`).
+    4. Automatically calculate the exact USDT amount transferred and credit it to the user's bot balance.
+  * **Duplicate TxID Protection:** Every processed TxID must be stored in a dedicated MongoDB collection (`transactions`). If a user or anyone else submits an already-used TxID, instantly reject it.
+  * **Atomic Balance Operations:** Use MongoDB atomic transactions (`$inc`) to prevent race conditions or fraud.
+
+---
+
+### 4. Force Join Channel/Group Verification
+* On `/start`, check if the user is a member of required channels/groups configured by the Admin.
+* If any channel/group is missing:
+  * Show an **Inline Keyboard** listing the unjoined channels/groups and a **"Verify 🟢"** button at the bottom.
+  * Delete previous force-join messages to keep the chat clean.
+* Clicking **"Verify"**:
+  * Re-check membership. If still missing some, update the inline keyboard showing *only* the remaining unjoined links.
+  * If joined all: Delete the force-join message and open the persistent main keyboard menu.
+
+---
+
+### 5. Key UI/UX & Main Keyboard Menu
+* **Persistent Keyboard Menu Options:**
+  `[ Buy Number ]`
+  `[ Deposit ] [ Balance ]`
+  `[ Support ]`
+
+* **Clean Chat Mechanics:**
+  * Auto-delete user commands after 10 seconds.
+  * Delete error messages automatically after 1–2 minutes.
+  * Executing a new menu command should automatically remove the previous reply message to keep the chat spotless.
+  * *Exception:* Active purchase messages, numbers, and received OTP messages must NEVER be deleted when navigating menus.
+
+---
+
+### 6. Number Purchase & OTP Workflow
+
+1. **Service & Provider Selection:**
+   * Select `[Telegram]` or `[WhatsApp]` -> Select Country -> Show available providers with stock count and final price `(API Price + Admin Margin)`.
+
+2. **Active Purchase Limit Check:**
+   * Admin sets a global active number limit (e.g., max 3 active numbers per user).
+   * If user exceeds limit, block new purchase with a notice listing active numbers and asking to wait for OTP or cancel them.
+
+3. **Buying Number (`getNumberV2`):**[span_5](start_span)[span_5](end_span)
+   * Check user balance vs final price. If insufficient, prompt to deposit.
+   * If API key balance is zero/failed: Show notification `"API balance finished. Please notify Admin: @X3V1L"`.
+   * **Message Layout upon purchase:**
+     ```text
+     WhatsApp — 🇦🇫 Afghanistan 💲0.093
+     
+     [ 🇦🇫 +93730501155 ]  <-- Inline Button (Click copies phone number ONLY)
+     [ Buy again ] [ Cancel ❌ ]
+     ```
+
+4. **OTP Reception Handling:**
+   * Numbers are valid for 20 minutes before auto-cancellation.
+   * On SMS Webhook notification[span_6](start_span)[span_6](end_span):
+     1. First, send/update the OTP message to user chat:
+        ```text
+        🇨🇱 Telegram 56968476591 💲0.11
+        
+        [ 123456 ] <-- Inline Button (Click copies OTP ONLY)
+        ```
+     2. Permanently deduct balance from user account.
+     3. Remove the initial number purchase message.
+     4. Forward OTP to Official Public OTP Telegram Group formatted as:
+        ```text
+        🇨🇱 WhatsApp 🆔 6462177945
+        
+        [ 56968476591 ] <-- Inline Button (Click copies OTP ONLY)
+        
+        [ Number bot ] [ Profile ]
+        ```
+        *(Profile Link Format: `tg://openmessage?user_id=6462177945`)*
+
+---
+
+### 7. Admin Panel & Automated Reporting
+* **Admin Commands:**
+  * `/addbal {user_id} {amount}` — Add user balance with user notification.
+  * `/lessbal {user_id} {amount}` — Deduct user balance with user notification.
+  * Broadcast System: Send broadcast messages (Text + Multiple Images) to all registered users.
+
+* **Analytics & Leaderboard:**
+  * Track stats for last 24 hours, 7 days, and 30 days (Total Buy, Total Cancel, Total OTP Received).
+  * Daily leaderboard based on Bangladesh Time (Midnight 12:00 AM reset).
+
+* **Automatic Midnight 12:00 AM BD Time Group Report:**
+  Every day at 12:00 AM (UTC+6), automatically calculate and post a 24-hour daily summary report to the official Telegram Group:
+  ```text
+  📊 Daily Activity Summary
+  Today total OTP received: 16
+  Total buy: 66
+  Total cancel ❌: 50
+
+  Services Breakdown:
+  Telegram: — 🇨🇱 Chile : 6 pcs , 💲2
+  WhatsApp: — 🇦🇫 Afghanistan: 10 pcs , 💲1.2
