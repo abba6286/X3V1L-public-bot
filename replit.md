@@ -1,45 +1,90 @@
-# [Project name]
+# Virtual Phone Number Bot
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
-
-## Run & Operate
-
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+A fully automated Telegram bot that sells virtual phone numbers (Telegram `tg` and WhatsApp `wa` services) using the SMSBower API. Payments are processed via USDT/BEP-20 deposits verified on-chain through BscScan.
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- **Runtime:** Node.js 24 (TypeScript, pnpm monorepo)
+- **Bot framework:** Grammy (webhook mode)
+- **Database:** MongoDB via Mongoose
+- **Build:** esbuild (bundles to `dist/index.mjs`)
+- **Scheduler:** node-cron (expiry checks + midnight BD report)
 
-## Where things live
+## Artifact
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+The bot lives inside the **`artifacts/api-server`** Express app at the `/api` prefix.
 
-## Architecture decisions
+| Route | Purpose |
+|-------|---------|
+| `POST /api/telegram-webhook` | Receives Telegram updates from Telegram servers |
+| `GET  /api/telegram-webhook` | Health-check / confirmation |
+| `POST /api/sms-webhook` | Receives OTP/SMS notifications from SMSBower |
+| `GET  /api/sms-webhook` | Health-check / confirmation |
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+## Environment Variables / Secrets
 
-## Product
+Set via Replit Secrets (never commit these):
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+| Key | Description |
+|-----|-------------|
+| `BOT_TOKEN` | Telegram bot token from @BotFather |
+| `MONGODB_URI` | MongoDB connection string (Atlas or self-hosted) |
+| `SMSBOWER_API_KEY` | SMSBower API key |
+| `BSCSCAN_API_KEY` | BscScan API key for USDT transfer verification |
+| `SESSION_SECRET` | Express session secret |
 
-## User preferences
+Set via Replit env vars (non-sensitive):
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+| Key | Description |
+|-----|-------------|
+| `ADMIN_USER_ID` | Telegram user ID of the admin |
+| `ADMIN_WALLET` | BEP-20 wallet address for USDT deposits |
+| `OTP_GROUP_ID` | Telegram group ID where OTPs are forwarded |
+| `SUPPORT_USERNAME` | Support handle shown to users (e.g. @X3V1L) |
 
-## Gotchas
+## Webhook Setup
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+### Telegram
+The webhook is set automatically on server startup. Telegram will push updates to:
+```
+https://<YOUR_DOMAIN>/api/telegram-webhook
+```
 
-## Pointers
+### SMSBower OTP Webhook
+Configure this URL in your SMSBower dashboard → Webhook Settings:
+```
+https://<YOUR_DOMAIN>/api/sms-webhook
+```
+Replace `<YOUR_DOMAIN>` with your Replit dev domain or production domain.
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start dev server (builds then starts)
+pnpm --filter @workspace/api-server run dev
+
+# Type-check only
+pnpm --filter @workspace/api-server run typecheck
+
+# Build only
+pnpm --filter @workspace/api-server run build
+```
+
+## Bot Features
+
+- **Buy flow:** Service (Telegram/WhatsApp) → Country → Provider → Purchase → OTP delivery
+- **Deposit flow:** Show USDT/BEP-20 wallet → Enter TxID → Verify on-chain → Credit balance
+- **Balance:** View current balance + all active number purchases
+- **Admin panel:** Daily reports, leaderboard, broadcast, add/remove balance, set margin
+- **Auto-expiry:** Numbers auto-cancelled after 20 minutes if OTP not received
+- **Midnight report:** Daily stats sent to admin at 00:00 BD time (18:00 UTC)
+
+## User Preferences
+
+- Grammy (not Telegraf) for the bot framework
+- Balance deducted on OTP receipt, not on number purchase
+- No inline session plugin — state stored in MongoDB `User.state`
+- Duplicate TxID protection via unique index on `transactions` collection
