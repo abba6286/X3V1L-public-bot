@@ -18,3 +18,12 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+ADMIN_USER_ID = "8451595943"
+ADMIN_WALLET = "0xBAd8177987F67FD3b38bB425d0963eC410fcd204"
+NODE_ENV = "production"
+OTP_GROUP_ID = "-1003882846170"
+SUPPORT_USERNAME = "@X3V1L"
