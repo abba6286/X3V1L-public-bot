@@ -1,1 +1,70 @@
-import app from "./app.js";\nimport { logger } from "./lib/logger.js";\nimport { connectDatabase } from "./bot/database.js";\nimport { createBot } from "./bot/bot.js";\nimport { startScheduler } from "./bot/scheduler.js";\nimport { assertConfig, BOT_TOKEN, WEBHOOK_URL } from "./bot/config.js";\n\nconst rawPort = process.env["PORT"];\n\nif (!rawPort) {\n  throw new Error("PORT environment variable is required but was not provided.");\n}\n\nconst port = Number(rawPort);\nif (Number.isNaN(port) || port <= 0) {\n  throw new Error(`Invalid PORT value: "${rawPort}"`);\n}\n\nasync function main() {\n  // Validate config\n  assertConfig();\n\n  // Connect to MongoDB\n  await connectDatabase();\n\n  // Create and initialize Grammy bot\n  const bot = await createBot();\n\n  // Start cron jobs\n  startScheduler(bot);\n\n  // Remove any old Telegram webhook before starting long polling.\n  // Pending updates are preserved so user messages are not silently lost.\n  await bot.api.deleteWebhook({ drop_pending_updates: false });\n  logger.info("Telegram webhook disabled; starting long polling");\n\n  const webhookBase = WEBHOOK_URL ||\n    (process.env["REPLIT_DEV_DOMAIN"]\n      ? `https://${process.env["REPLIT_DEV_DOMAIN"]}`\n      : "");\n\n  // Start Express server for health checks and the SMSBower OTP callback.\n  app.listen(port, (err) => {\n    if (err) {\n      logger.error({ err }, "Error listening on port");\n      process.exit(1);\n    }\n    logger.info({ port }, "Server listening");\n    if (webhookBase) {\n      logger.info(`SMSBower webhook: ${webhookBase}/api/sms-webhook`);\n    } else {\n      logger.warn("WEBHOOK_URL is not set; configure SMSBower webhook manually");\n    }\n  });\n\n  // Long polling receives Telegram updates without a public Telegram webhook.\n  bot.start({\n    onStart: (botInfo) => {\n      logger.info({ username: botInfo.username }, "Telegram long polling started");\n    },\n  }).catch((err) => {\n    logger.error({ err }, "Telegram long polling stopped");\n    process.exit(1);\n  });\n}\n\nmain().catch((err) => {\n  logger.error({ err }, "Startup failed");\n  process.exit(1);\n});\n
+import app from "./app.js";
+import { logger } from "./lib/logger.js";
+import { connectDatabase } from "./bot/database.js";
+import { createBot } from "./bot/bot.js";
+import { startScheduler } from "./bot/scheduler.js";
+import { assertConfig, BOT_TOKEN, WEBHOOK_URL } from "./bot/config.js";
+
+const rawPort = process.env["PORT"];
+
+if (!rawPort) {
+  throw new Error("PORT environment variable is required but was not provided.");
+}
+
+const port = Number(rawPort);
+if (Number.isNaN(port) || port <= 0) {
+  throw new Error(`Invalid PORT value: "${rawPort}"`);
+}
+
+async function main() {
+  // Validate config
+  assertConfig();
+
+  // Connect to MongoDB
+  await connectDatabase();
+
+  // Create and initialize Grammy bot
+  const bot = await createBot();
+
+  // Start cron jobs
+  startScheduler(bot);
+
+  // Remove any old Telegram webhook before starting long polling.
+  // Pending updates are preserved so user messages are not silently lost.
+  await bot.api.deleteWebhook({ drop_pending_updates: false });
+  logger.info("Telegram webhook disabled; starting long polling");
+
+  const webhookBase = WEBHOOK_URL ||
+    (process.env["REPLIT_DEV_DOMAIN"]
+      ? `https://${process.env["REPLIT_DEV_DOMAIN"]}`
+      : "");
+
+  // Start Express server for health checks and the SMSBower OTP callback.
+  app.listen(port, (err) => {
+    if (err) {
+      logger.error({ err }, "Error listening on port");
+      process.exit(1);
+    }
+    logger.info({ port }, "Server listening");
+    if (webhookBase) {
+      logger.info(`SMSBower webhook: ${webhookBase}/api/sms-webhook`);
+    } else {
+      logger.warn("WEBHOOK_URL is not set; configure SMSBower webhook manually");
+    }
+  });
+
+  // Long polling receives Telegram updates without a public Telegram webhook.
+  bot.start({
+    onStart: (botInfo) => {
+      logger.info({ username: botInfo.username }, "Telegram long polling started");
+    },
+  }).catch((err) => {
+    logger.error({ err }, "Telegram long polling stopped");
+    process.exit(1);
+  });
+}
+
+main().catch((err) => {
+  logger.error({ err }, "Startup failed");
+  process.exit(1);
+});
