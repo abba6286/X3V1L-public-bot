@@ -30,7 +30,7 @@ Set via Replit Secrets (never commit these):
 | `BOT_TOKEN` | Telegram bot token from @BotFather |
 | `MONGODB_URI` | MongoDB connection string (Atlas or self-hosted) |
 | `SMSBOWER_API_KEY` | SMSBower API key |
-| `BSCSCAN_API_KEY` | BscScan API key for USDT transfer verification |
+| `BSC_RPC_URL` | BNB Smart Chain JSON-RPC endpoint for USDT transfer verification |
 | `SESSION_SECRET` | Express session secret |
 
 Set via Replit env vars (non-sensitive):
@@ -41,6 +41,7 @@ Set via Replit env vars (non-sensitive):
 | `ADMIN_WALLET` | BEP-20 wallet address for USDT deposits |
 | `OTP_GROUP_ID` | Telegram group ID where OTPs are forwarded |
 | `SUPPORT_USERNAME` | Support handle shown to users (e.g. @X3V1L) |
+| `BSC_CONFIRMATIONS` | Minimum BSC confirmations before crediting a deposit (default: 12) |
 
 ## Webhook Setup
 
