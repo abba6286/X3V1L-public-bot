@@ -2,7 +2,8 @@ export const BOT_TOKEN = process.env["BOT_TOKEN"] ?? "";
 export const SMSBOWER_API_KEY = process.env["SMSBOWER_API_KEY"] ?? "";
 export const ADMIN_USER_ID = Number(process.env["ADMIN_USER_ID"] ?? 0);
 export const ADMIN_WALLET = process.env["ADMIN_WALLET"] ?? "";
-export const BSCSCAN_API_KEY = process.env["BSCSCAN_API_KEY"] ?? "";
+export const BSC_RPC_URL = process.env["BSC_RPC_URL"] ?? "";
+export const BSC_CONFIRMATIONS = Number(process.env["BSC_CONFIRMATIONS"] ?? 12);
 export const OTP_GROUP_ID = Number(process.env["OTP_GROUP_ID"] ?? 0);
 export const SUPPORT_USERNAME = process.env["SUPPORT_USERNAME"] ?? "@X3V1L";
 export const MONGODB_URI = process.env["MONGODB_URI"] ?? "";
@@ -17,9 +18,13 @@ export function assertConfig() {
     SMSBOWER_API_KEY,
     MONGODB_URI,
     ADMIN_WALLET,
-    BSCSCAN_API_KEY,
+    BSC_RPC_URL,
   };
   for (const [key, val] of Object.entries(required)) {
     if (!val) throw new Error(`Missing required env var: ${key}`);
+  }
+
+  if (!Number.isInteger(BSC_CONFIRMATIONS) || BSC_CONFIRMATIONS < 1) {
+    throw new Error("BSC_CONFIRMATIONS must be a positive integer");
   }
 }
